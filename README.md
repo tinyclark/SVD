@@ -2,7 +2,7 @@
 
 This is a Student Research Training(SRT) project of Tsinghua University,IE.
 
-We are aimed at pividing some information based on data large mining with SVD algorithm.
+We are aimed at providing some information based on data large mining with SVD algorithm.
 
 [SVD in github](https://github.com/clarkwangbc/SVD)
 
