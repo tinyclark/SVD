@@ -25,7 +25,7 @@ public:
 	double Max();//向量中最大的数
 
 	void print();//在屏幕上打印向量
-	void fprint();//在文件中打印向量
+	void fprint(fstream outfile);//在文件中打印向量
 
 	~Vector();//析构函数
 };
@@ -37,7 +37,7 @@ private:
 	int m,n;//m是行数，n是列数
 
 public:
-	Matrix(int n);//构造函数，n*n的单位矩阵
+	Matrix(int Nnum);//构造函数，n*n的单位矩阵
 	Matrix(int Mnum,int Nnum);//构造函数， Mnum*Nnum的矩阵
 	Matrix(string s);//从文件中读取构造矩阵
 
