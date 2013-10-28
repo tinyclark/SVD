@@ -46,7 +46,7 @@ void Vector::Add(Vector A)
 	for(i=0;i<n;i++)
 		vector[i]=vector[i]+A[i];
 }
-	
+
 void Vector::Minus(Vector A)
 {
 	if(n!=A.N())
@@ -71,8 +71,8 @@ void Vector::NumProd(double a)
 	int i=0;
 	for(i=0;i<n;i++)
 		vector[i]=vector[i]*a;
-	}
-	
+}
+
 double Vector::DotProd(Vector A)
 {
 	if(n!=A.N())
@@ -91,16 +91,9 @@ double Vector::DotProd(Vector A)
 	double sum=0;
 	for(i=0;i<n;i++)
 		sum+=vector[i]*A[i];
+	return sum;
 }
 
-Matrix * Vector::Trans()
-{
-	Matrix result(n,1);
-	int i=0;
-	for(i=0;i<n;i++)
-		result.set(i,1,vector[i]);
-	return &result;
-}
 
 void Vector::set(int i,double value)
 {
@@ -123,7 +116,7 @@ void Vector::print()
 	cout<<"(";
 	for(i=0;i<n;i++)
 		cout<<vector[i]<<" ";
-	cout<<")";
+	cout<<")"<<endl;;
 }
 
 void Vector::fprint()
@@ -157,7 +150,7 @@ Matrix::Matrix(int Nnum)
 		matrix[i*n+i]=1;
 }
 
-Matrix::Matrix(int Nnum,int Mnum)
+Matrix::Matrix(int Mnum,int Nnum)
 {
 	matrix=new double[Mnum*Nnum];
 	m=Mnum;
@@ -168,16 +161,15 @@ Matrix::Matrix(int Nnum,int Mnum)
 		matrix[i]=0;
 }
 
-Matrix::Matrix(bool num)
+Matrix::Matrix(std::string s)
 {
 	ifstream infile;
-	if(num==true)
-		infile.open("inputMatrix1.txt",ios::in,1);
-	else if(num==false)
-		infile.open("inputMatrix2.txt",ios::in,1);
+	infile.open(s);
 	infile>>m;
 	infile>>n;
+
 	mn=m*n;
+	matrix=new double[mn];
 	int i=0,j=0;
 	for(;i<m;i++)
 		for(j=0;j<n;j++)
@@ -258,9 +250,9 @@ void Matrix::NumProd(double a)
 		matrix[i]=matrix[i]*a;
 }
 
-Matrix * Matrix::DotProd(Matrix A)
+void Matrix::DotProd(Matrix A,Matrix B)
 {
-	if(n!=A.M())
+	if(A.N()!=B.M())
 	{
 		cout<<"ERRO:列数不匹配"<<endl;
 		cout<<"列数分别为：";
@@ -269,25 +261,38 @@ Matrix * Matrix::DotProd(Matrix A)
 		exit(1);
 	}
 
-	Matrix result(m,A.N());
 	int i=0,j=0,k=0;
 	for (;i<m;i++)
-			for (j=0;j<A.N();j++)
-			{
-				result[i*A.N()+j]=0;
-				for (k=0;k<n;k++)
-					result[i*A.N()+j]+=matrix[i*n+k]*A[k*A.N()+j];
-			}
-	return &result;
+		for (j=0;j<A.M();j++)
+		{
+			matrix[i*B.N()+j]=0;
+			for (k=0;k<A.N();k++)
+				matrix[i*n+j]+=A[i*A.N()+k]*B[k*B.N()+j];
+		}
 }
 
-Matrix * Matrix::Trans()
+void Matrix::Trans(Matrix &trans)
 {
-	Matrix trans(n,m);
-	int i=0;
-	for(;i<mn;i++)
-		trans[i]=matrix[i];
-	return &trans;
+	if(m!=trans.N())
+	{
+		cout<<"ERRO:列数不匹配"<<endl;
+		cout<<"列数分别为：";
+		cout<<m<<"和"<<trans.N()<<endl;
+		system("pause");
+		exit(1);
+	}
+	else if(n!=trans.M())
+	{
+		cout<<"ERRO:行数不匹配"<<endl;
+		cout<<"行数分别为：";
+		cout<<n<<"和"<<trans.M()<<endl;
+		system("pause");
+		exit(1);
+	}
+	int i=0,j=0;
+	for(;i<n;i++)
+		for(j=0;j<m;j++)
+			trans[i*m+j]=matrix[j*n+i];
 }
 
 void Matrix::set(int i,int j,double value)
@@ -295,40 +300,38 @@ void Matrix::set(int i,int j,double value)
 	matrix[i*n+j]=value;
 }
 
-Vector * Matrix::Row(int k)
+void Vector::Row(Matrix &A,int k)
 {
-	Vector v(n);
 	int i=0;
-	for(;i<n;i++)
-		v[i]=matrix[k*n+i];
-	return &v;
+	int num=A.N();
+	for(i=0;i<n;i++)
+		vector[i]=A[k*num+i];
 }
 
-Vector * Matrix::Col(int k)
+void Vector::Col(Matrix &A,int k)
 {
-	Vector v(m);
 	int i=0;
-	for(;i<m;i++)
-		v[i]=matrix[i*n+k];
-	return &v;
+	int num=A.N();
+	for(i=0;i<n;i++)
+		vector[i]=A[i*num+k];
 }
 
-Vector * Matrix::HRow(int k)//此处默认m>n，可能需要修改
+void Vector::HRow(Matrix &A,int k)//此处默认m>n，可能需要修改
 {
-	Vector v(n-k-1);
+	static Vector v(n-k-1);
 	int i=0;
+	int num=A.N();
 	for(;i<v.N();i++)
-		v[i]=matrix[k*n+k+i+1];
-	return &v;
+		vector[i]=A[k*num+k+i+1];
 }
 
-Vector * Matrix::HCol(int k)//此处默认m>n，可能需要修改
+void Vector::HCol(Matrix &A,int k)//此处默认m>n，可能需要修改
 {
-	Vector v(n-k);
+	static Vector v(n-k);
 	int i=0;
+	int num=A.N();
 	for(;i<v.N();i++)
-		v[i]=matrix[k*n+i*n+k];
-	return &v;
+		vector[i]=A[k*num+i*num+k];
 }
 
 double Matrix::Max()
@@ -345,15 +348,17 @@ void Matrix::print()
 {
 
 	int i=0,j=0;
+	cout<<endl;
 	for(;i<m;i++)
 	{
 		cout<<"| ";
 		for(j=0;j<n;j++)
-			cout<<matrix[i*n+j]<<"";
+			cout<<matrix[i*n+j]<<" ";
 		cout<<"|"<<endl;
 	}
+	cout<<endl;
 }
-	
+
 void Matrix::fprint()
 {
 	ofstream outfile;
@@ -363,7 +368,7 @@ void Matrix::fprint()
 	{
 		outfile<<"| ";
 		for(j=0;j<n;j++)
-			outfile<<matrix[i*n+j]<<"";
+			outfile<<matrix[i*n+j]<<" ";
 		outfile<<"|"<<endl;
 	}
 	outfile.close();
