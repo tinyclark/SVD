@@ -2,6 +2,14 @@
 //
 
 #include "stdafx.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include "MatrixSVD.h"
+#include "Givens.h"
+#include "HouseHold.h"
+
+using namespace std;
 
 
 int _tmain(int argc, _TCHAR* argv[])
