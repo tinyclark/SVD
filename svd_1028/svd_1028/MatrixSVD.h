@@ -54,6 +54,7 @@ public:
 
 	void set(int i,double value);//修改值
 
+	double modular();//向量模
 	double Max();//向量中最大的数
 
 	void Row(Matrix &A,int k);//取矩阵第k行行向量
@@ -62,6 +63,8 @@ public:
 	void HRow(Matrix &A,int k);//Household中取行向量的方法
 	void HCol(Matrix &A,int k);//Household中取列向量的方法
 
+	void Normalize();//归一化
+	void Span(Matrix T);//生成矩阵
 	void print();//在屏幕上打印向量
 	void fprint();//在文件中打印向量
 

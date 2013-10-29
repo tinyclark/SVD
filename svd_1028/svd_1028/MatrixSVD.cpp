@@ -4,6 +4,7 @@
 #include <fstream>
 #include "MatrixSVD.h"
 #include <string>
+#include <math.h>
 
 using namespace std;
 
@@ -100,6 +101,14 @@ void Vector::set(int i,double value)
 	vector[i]=value;
 }
 
+double Vector::modular()
+{
+	double sum=0;
+	for(int i=0;i<n;i++)
+		sum+=vector[i]*vector[i];
+	return sqrt(sum);
+}
+
 double Vector::Max()
 {
 	int i=1;
@@ -109,6 +118,8 @@ double Vector::Max()
 			temp=vector[i];
 	return temp;
 }
+
+
 
 void Vector::print()
 {
@@ -332,6 +343,32 @@ void Vector::HCol(Matrix &A,int k)//此处默认m>n，可能需要修改
 	int num=A.N();
 	for(;i<v.N();i++)
 		vector[i]=A[k*num+i*num+k];
+}
+
+void Vector::Normalize()
+{
+	int i=0,sum=0;
+	for(i=0;i<n;i++)
+		sum+=vector[i];
+	for(i=0;i<n;i++)
+		vector[i]=vector[i]/sum;
+}
+void Vector::Span(Matrix T)
+{
+	if(T.M()!=T.N())
+	{
+		cout<<"ERRO：span 发生错误"<<endl;
+		cout<<"传入矩阵行列数不等"<<endl;
+	}
+	else if(T.N()!=n)
+	{
+		cout<<"ERRO：span 发生错误"<<endl;
+		cout<<"传入矩阵行列数维数与向量不等"<<endl;
+	}
+	int i,j;
+	for(int i=0;i<n;i++)
+		for(int j=0;j<n;j++)
+			T[i*n+j]=vector[i]*vector[j];
 }
 
 double Matrix::Max()
